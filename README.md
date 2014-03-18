@@ -112,9 +112,6 @@ Example
 ```
 
 
-
-
-
 ##  TODO
 
 - [ ] **COMPLEXITY_REQUIRED** doesn't check how many of the *__COUNT variables are set to 0. So if they are all < 0, your input will always fail when **COMPLEXITY_REQUIRED** is > 0
