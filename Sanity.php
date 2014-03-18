@@ -81,7 +81,6 @@
 
 
         /**
-         * static function configure($conf = array, $named = null)
          *
          * This function configures Sanity to the rules passed. If any const values are omitted it uses the default
          *
@@ -174,21 +173,32 @@
                         self::$SAVED_RULES[$ruleName] = self::$DEFAULT_RULES;
                     } else {
                         // Create a new entry in our SAVED_RULES list
-                        self::$SAVED_RULES += array($ruleName => self::$DEFAULT_RULES);
+                        self::$SAVED_RULES = array_merge(self::$SAVED_RULES, array($ruleName => self::$DEFAULT_RULES));
                     }
                     self::$DEFAULT_RULES = $backup_rules;
                 }
             }
         }
 
+        /**
+         * This is the primary function of Sanity. It checks your input against the given ruleName, or if one is not
+         * provided it uses whatever is in the DEFAULT_RULES array. This returns
+         *
+         * @since 1.0
+         *
+         * @param string $input input string.
+         * @param null $ruleName name of the saved rule to use
+         *
+         * @return bool true if input passes rules, false otherwise
+         */
         public static function check($input, $ruleName = null) {
             // Set the current RULE_IN_USE
             $input = trim($input);
             if (isset($ruleName)) {
                 if (array_key_exists($ruleName, self::$SAVED_RULES)) {
                     self::$RULE_IN_USE = self::$SAVED_RULES[$ruleName];
-                } else { // Might be a better way to handle functionality errors. For now exceptions must be caught
-                    self::d("Rule {$ruleName} doesn't exist. Falling back to default. Check code");
+                } else {
+                    self::d("Rule {$ruleName} doesn't exist. Falling back to default. Check code...");
                     self::$RULE_IN_USE = self::$DEFAULT_RULES;
                 }
             } else {
@@ -500,3 +510,4 @@
         }
 
     }
+
