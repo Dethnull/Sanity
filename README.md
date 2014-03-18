@@ -55,16 +55,72 @@ Constant Name | Type | Default(s) | Description | Note
 **SYMBOL_COUNT** | int | _2_ | Required # of symbols to pass check | Included in **COMPLEXITY_REQUIRED** check
 **WHITESPACE_COUNT** | int | _2_ | Required # of whitespaces to pass check | Included in **COMPLEXITY_REQUIRED** check
 **COMPLEXITY_REQUIRED** | int | _3_ | Required number of options that must be met. | The maximum number this can be is the size of the array **REQUIRED_GROUPS**
-**REQUIRED_GROUPS** | array | **UPPER_COUNT**, **LOWER_COUNT**, **NUMBER_COUNT**, **SYMBOL_COUNT**, **WHITESPACE_COUNT** | This array holds the values that must be met when **COMPLEXITY_REQUIRED** does its thing
+**REQUIRED_GROUPS** | array | **UPPER_COUNT**, **LOWER_COUNT**, **NUMBER_COUNT**, **SYMBOL_COUNT**, **WHITESPACE_COUNT** | This array holds the values that must be met when **COMPLEXITY_REQUIRED** does its thing | Don't call this directly. Instead edit the Sanity class to reflect changes to this option.
 **DEBUG** | _false_ | bool | Allows debug information to be printed using the function **print_debug_info()**
 
 > Note: **REQUIRED_GROUPS** should only be manipulated when changing the core functionality of Sanity. Adding any values when configuring Sanity is not recommended as you will definitely break it's functionality.
 
+
+## Sanity Functions
+
+All functions in Sanity are static, so you must call them like such: Sanity::funcName()
+
+Function Name | Parameters | Return Value | Description
+------------- | ---------- | ------------ | ------------
+configure() | ($conf = array(), $ruleName = null) | N/A | Takes an array the rule variables and a string to name your configuration. $ruleName is optional
+check() | ($input = string , $ruleName = null) | bool | Returns true if $input meets the criteria of $ruleName, or default rules if $ruleName is undefined.
+check_and_hash() | ($input = string, $ruleName = null) | string or false | Returns a hash of the input if it meets the ruleName criteria. The hash returned is defined in [PasswordHash](PasswordHash.php)
+print_default_rules() | N/A | N/A | This echo's a formatted string that displays what Sanity's default rules currently are.
+print_saved_rules() | N/A | N/A | Same as print_default_rules(), except it prints the contents of the saved_rules array.
+print_debug_info() | N/A | N/A | Echo's the debug information, which will state what info needs to be met for your input to be valid. For debug purposes, not user end.
+
+## Tip
+
+When configuring your Sanity checker, I recommend creating a separate file to put all your named configurations in. Then include this file at the end of the Sanity.php file.
+
+Example
+
+```php
+    <?php
+    // Sanity.php source...
+    include_include "sanity-conf.php";
+```
+
+```php
+    <?php
+    // sanity-conf.php source...
+
+    Sanity::configure(array(
+        rule assignment here...
+    ),"password");
+
+    Sanity::configure(array(
+        rule assignment here...
+    ),"username");
+```
+
+```php
+    <?php
+    // Youscript.php
+    include_once "Sanity.php" // Includes your configured Sanity rules
+
+    if (Sanity::check($userInput, "password"))
+        echo "success";
+    else
+        echo "failure";
+
+```
+
+
+
+
+
 ##  TODO
 
-- If **ALLOW_WHITESPACES**, **ALLOW_NUMBERS**, and **ALLOW_SYMBOLS** are all false and **COMPLEXITY_REQUIRED** is > 2, then input will always be rejected. This will be fixed in 1.1
-- [] if all *__COUNT variables are set to 0 and **COMPLEXITY_REQUIRED** is set to anything higher than 0, your input will always be rejected.
-
+- [ ] **COMPLEXITY_REQUIRED** doesn't check how many of the *__COUNT variables are set to 0. So if they are all < 0, your input will always fail when **COMPLEXITY_REQUIRED** is > 0
+- [ ] **COMPLEXITY_REQUIRED** also will make input fail if **ALLOW_*** variables are all false, and **COMPLEXITY_REQUIRED** is > 2
+- [ ] Implement more robust debug information that can be obtain and presented to the end user.
+- [ ] Increased optimization. I'm sure there is more that can be done to increase the speed of Sanity
 
 ## License
 
