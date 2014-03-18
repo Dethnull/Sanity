@@ -1,32 +1,32 @@
 <?php
 
     include_once "./portable-utf8.php"; // See file for licensing & author information
-    include_once "./PasswordHash.php";  // see file for licensing & author information
+    include_once "./PasswordHash.php"; // see file for licensing & author information
 
     /**
      * Class Sanity
      *
      * The MIT License (MIT)
-
-        Copyright (c) 2014 Dethnull
-
-        Permission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        copies of the Software, and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:
-
-        The above copyright notice and this permission notice shall be included in all
-        copies or substantial portions of the Software.
-
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-        SOFTWARE.
+     *
+     * Copyright (c) 2014 Dethnull
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a copy
+     * of this software and associated documentation files (the "Software"), to deal
+     * in the Software without restriction, including without limitation the rights
+     * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     * copies of the Software, and to permit persons to whom the Software is
+     * furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in all
+     * copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+     * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+     * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+     * SOFTWARE.
      */
     class Sanity {
         // Constants to match the named Key => value pairs for Sanity
@@ -37,12 +37,12 @@
         const ALLOW_SYMBOLS       = "ALLOW_SYMBOLS";
         const ALLOW_NUMBERS       = "ALLOW_NUMBERS";
         const IGNORE_CASE         = "IGNORE_CASE";
-        const UPPER               = "UPPER";
-        const LOWER               = "LOWER";
-        const NUMBER              = "NUMBER";
-        const SYMBOL              = "SYMBOL";
+        const UPPER_COUNT         = "UPPER";
+        const LOWER_COUNT         = "LOWER";
+        const NUMBER_COUNT        = "NUMBER";
+        const SYMBOL_COUNT        = "SYMBOL";
+        const WHITESPACES_COUNT   = "WHITESPACES";
         const REQUIRED_GROUPS     = "REQUIRED_GROUPS";
-        const WHITESPACES         = "WHITESPACES";
         const DISALLOWED_LIST     = "DISALLOWED";
         const DEBUG               = "DEBUG";
 
@@ -59,11 +59,11 @@
             // than the active values in REQUIRED_GROUPS
             self::COMPLEXITY_REQUIRED => 3,
             self::REQUIRED_GROUPS     => array(
-                self::UPPER       => 1, // If any of these values are < 0, they will be ignored
-                self::LOWER       => 1, //
-                self::NUMBER      => 1,
-                self::SYMBOL      => 1,
-                self::WHITESPACES => 1,
+                self::UPPER_COUNT       => 2, // If any of these values are < 0, they will be ignored
+                self::LOWER_COUNT       => 2, //
+                self::NUMBER_COUNT      => 2,
+                self::SYMBOL_COUNT      => 2,
+                self::WHITESPACES_COUNT => 2,
             ),
             // This list holds an array of strings that will be checked for specific sequences
             // e.g.  "123", "abc", it will check if 123 is found sequentially
@@ -76,8 +76,9 @@
         private static $SAVED_RULES = array();
         // Basic array containing debug information
         private static $debug_info = array();
+
         // constructor is set to private to prevent instantiation from occurring. All functions are static
-        private function __construct() {}
+        private function __construct() { }
 
 
         /**
@@ -108,7 +109,7 @@
          *
          * @since 1.0
          *
-         * @param array $conf[CONST_NAME] = value
+         * @param array         $conf [CONST_NAME] = value
          * @param null | string $ruleName Name of the rule you are defining
          */
         public static function configure($conf = array(), $ruleName = null) {
@@ -144,20 +145,20 @@
             if (isset($conf[self::IGNORE_CASE])) {
                 self::$DEFAULT_RULES[self::IGNORE_CASE] = $conf[self::IGNORE_CASE];
             }
-            if (isset($conf[self::UPPER])) {
-                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::UPPER] = $conf[self::UPPER];
+            if (isset($conf[self::UPPER_COUNT])) {
+                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::UPPER_COUNT] = $conf[self::UPPER_COUNT];
             }
-            if (isset($conf[self::LOWER])) {
-                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::LOWER] = $conf[self::LOWER];
+            if (isset($conf[self::LOWER_COUNT])) {
+                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::LOWER_COUNT] = $conf[self::LOWER_COUNT];
             }
-            if (isset($conf[self::NUMBER])) {
-                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::NUMBER] = $conf[self::NUMBER];
+            if (isset($conf[self::NUMBER_COUNT])) {
+                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::NUMBER_COUNT] = $conf[self::NUMBER_COUNT];
             }
-            if (isset($conf[self::SYMBOL])) {
-                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::SYMBOL] = $conf[self::SYMBOL];
+            if (isset($conf[self::SYMBOL_COUNT])) {
+                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::SYMBOL_COUNT] = $conf[self::SYMBOL_COUNT];
             }
-            if (isset($conf[self::WHITESPACES])) {
-                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::WHITESPACES] = $conf[self::WHITESPACES];
+            if (isset($conf[self::WHITESPACES_COUNT])) {
+                self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::WHITESPACES_COUNT] = $conf[self::WHITESPACES_COUNT];
             }
             if (isset($conf[self::DISALLOWED_LIST])) {
                 self::$DEFAULT_RULES[self::DISALLOWED_LIST] = $conf[self::DISALLOWED_LIST];
@@ -187,7 +188,7 @@
          * @since 1.0
          *
          * @param string $input input string.
-         * @param null $ruleName name of the saved rule to use
+         * @param null   $ruleName name of the saved rule to use
          *
          * @return bool true if input passes rules, false otherwise
          */
@@ -212,11 +213,11 @@
             $allowSymbol     = self::$RULE_IN_USE[self::ALLOW_SYMBOLS];
             $allowNumbers    = self::$RULE_IN_USE[self::ALLOW_NUMBERS];
             $ignoreCase      = self::$RULE_IN_USE[self::IGNORE_CASE];
-            $upperReq        = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::UPPER];
-            $lowerReq        = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::LOWER];
-            $numberReq       = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::NUMBER];
-            $symbolReq       = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::SYMBOL];
-            $whiteSpacesReq  = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::WHITESPACES];
+            $upperReq        = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::UPPER_COUNT];
+            $lowerReq        = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::LOWER_COUNT];
+            $numberReq       = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::NUMBER_COUNT];
+            $symbolReq       = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::SYMBOL_COUNT];
+            $whiteSpacesReq  = self::$RULE_IN_USE[self::REQUIRED_GROUPS][self::WHITESPACES_COUNT];
             $disallowedList  = array_values(self::$RULE_IN_USE[self::DISALLOWED_LIST]);
 
             // If we ignore the case then we'll set our string to all lowercase to compare
@@ -366,6 +367,7 @@
                 if ($consecutiveFound == $setLen) {
                     // since the found characters matches the length of the set, we know this set exists in the input
                     self::d("Input contained disallowed sequence {$set}\n\r<br/>");
+
                     return false;
                 }
             }
@@ -428,7 +430,7 @@
          * @since 1.0
          *
          * @param string $input String of input to be Sanity checked and hashed
-         * @param null $ruleName Name of the rule to use for the Sanity check
+         * @param null   $ruleName Name of the rule to use for the Sanity check
          *
          * @return string hashed value of input if it passes the Sanity check,
          *         boolean false if value doesn't pass Sanity check
@@ -451,7 +453,7 @@
             foreach (self::$DEFAULT_RULES as $rule => $value) {
                 if (is_array($value)) {
                     echo "{\t}Rule: {$rule}\n\r<br/>";
-                    foreach($value as $key => $val) {
+                    foreach ($value as $key => $val) {
                         echo "&nbsp;&nbsp;&nbsp;{$key} &nbsp;&nbsp;=> {$val}\n\r<br/>";
                     }
                 } else {
@@ -472,7 +474,7 @@
                     foreach ($rules as $rule => $value) {
                         if (is_array($value)) {
                             echo "{\t}Rule: {$rule}\n\r<br/>";
-                            foreach($value as $key => $val) {
+                            foreach ($value as $key => $val) {
                                 echo "&nbsp;&nbsp;&nbsp;{$key} &nbsp;&nbsp;=> {$val}\n\r<br/>";
                             }
                         } else {
@@ -503,6 +505,7 @@
          * Adds another value to the debug_info array.
          *
          * @since 1.0
+         *
          * @param string $msg
          */
         private static function d($msg) {
