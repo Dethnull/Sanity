@@ -55,11 +55,9 @@ Constant Name | Type | Default(s) | Description | Note
 **SYMBOL_COUNT** | int | _2_ | Required # of symbols to pass check | Included in **COMPLEXITY_REQUIRED** check
 **WHITESPACE_COUNT** | int | _2_ | Required # of whitespaces to pass check | Included in **COMPLEXITY_REQUIRED** check
 **COMPLEXITY_REQUIRED** | int | _3_ | Required number of options that must be met. | The maximum number this can be is the size of the array **REQUIRED_GROUPS**
-**REQUIRED_GROUPS** | array | **UPPER_COUNT**, **LOWER_COUNT**, **NUMBER_COUNT**, **SYMBOL_COUNT**, **WHITESPACE_COUNT** | This array holds the values that must be met when **COMPLEXITY_REQUIRED** does its thing | Don't call this directly. Instead edit the Sanity class to reflect changes to this option.
 **DEBUG** | bool | _false_ | Allows debug information to be printed using the function **print_debug_info()**
 
-> Note: **REQUIRED_GROUPS** should only be manipulated when changing the core functionality of Sanity. Adding any values when configuring Sanity is not recommended as you will definitely break it's functionality.
-
+> Note: **REQUIRED_GROUPS** that you will see in the source, should only be used internally. I created this constant for internal ease of use.
 
 ## Sanity Functions
 
