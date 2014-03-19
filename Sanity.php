@@ -502,6 +502,17 @@
         }
 
         /**
+         * Returns the debug array so the programmer can deal with it.
+         *
+         * @since 1.0
+         *
+         * @return array debug information
+         */
+        public static function get_debug_info() {
+            return self::$debug_info;
+        }
+
+        /**
          * Adds another value to the debug_info array.
          *
          * @since 1.0

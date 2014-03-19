@@ -99,6 +99,7 @@ check_and_hash() | ($input = string, $ruleName = null) | string or false | Retur
 print_default_rules() | N/A | N/A | This echo's a formatted string that displays what Sanity's default rules currently are.
 print_saved_rules() | N/A | N/A | Same as print_default_rules(), except it prints the contents of the saved_rules array.
 print_debug_info() | N/A | N/A | Echo's the debug information, which will state what info needs to be met for your input to be valid. For debug purposes, not user end.
+get_debug_info() | N/A | array | Returns the errors Sanity had during its checks
 
 ## Tip
 
