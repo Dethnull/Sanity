@@ -48,16 +48,44 @@ Constant Name | Type | Default(s) | Description | Note
 **ALLOW_WHITESPACES** | bool | _true_ | Allows whitespaces is true | ...
 **ALLOW_NUMBERS** | bool | _true_ | Allows numbers if true | ...
 **ALLOW_SYMBOLS** | bool | _true_ | Allows symbols if true | Sanity assumes that any input that is not a number and is not an uppercase/lowercase or whitespace value as defined in the [portable-utf8](portable-utf8.php) library, is a symbol.
-**IGNORE_CASE** | bool | _false_ | Ignores the case of the input if true | If this option is true it forces the input to all lowercase values for checking. **UPPER_COUNT** is ignored if this value is true.
-**UPPER_COUNT** | int | _2_ | Required # of uppercase letters to pass check | If < 0 this option is ignored. Ignored if **IGNORE_CASE** is true. Included in **COMPLEXITY_REQUIRED** check
-**LOWER_COUNT** | int | _2_ | Required # of lowercase letters to pass check | If < 0 this option is ignored. Included in **COMPLEXITY_REQUIRED** check
-**NUMBER_COUNT** | int | _2_ | Required # of numbers to pass check | If < 0 this option is ignored. Included in **COMPLEXITY_REQUIRED** check
-**SYMBOL_COUNT** | int | _2_ | Required # of symbols to pass check | Included in **COMPLEXITY_REQUIRED** check
-**WHITESPACE_COUNT** | int | _2_ | Required # of whitespaces to pass check | Included in **COMPLEXITY_REQUIRED** check
-**COMPLEXITY_REQUIRED** | int | _3_ | Required number of options that must be met. | The maximum number this can be is the size of the array **REQUIRED_GROUPS**
-**DEBUG** | bool | _false_ | Allows debug information to be printed using the function **print_debug_info()**
+**IGNORE_CASE** | bool | _false_ | Ignores the case of the input if true | If this option is true it forces the input to all lowercase values for checking. `UPPER_COUNT` is ignored if this value is true.
+**UPPER_COUNT** | int | _2_ | Required # of uppercase letters to pass check | If < 0 this option is ignored. Ignored if `IGNORE_CASE` is true. Included in `COMPLEXITY_REQUIRED` check
+**LOWER_COUNT** | int | _2_ | Required # of lowercase letters to pass check | If < 0 this option is ignored. Included in `COMPLEXITY_REQUIRED` check
+**NUMBER_COUNT** | int | _2_ | Required # of numbers to pass check | If < 0 this option is ignored. Included in `COMPLEXITY_REQUIRED` check
+**SYMBOL_COUNT** | int | _2_ | Required # of symbols to pass check | Included in `COMPLEXITY_REQUIRED` check
+**WHITESPACE_COUNT** | int | _2_ | Required # of whitespaces to pass check | Included in `COMPLEXITY_REQUIRED` check
+**COMPLEXITY_REQUIRED** | int | _3_ | Required number of options that must be met. | The maximum number this can be is the size of the array `REQUIRED_GROUPS`
+**DISALLOWED_LIST** | array | null | List of strings that are not allowed in input. | This check is case insensitive, regardless of what `IGNORE_CASE`  is set to.
+**DEBUG** | bool | _false_ | Allows debug information to be printed using the function `print_debug_info()`
 
-> Note: **REQUIRED_GROUPS** that you will see in the source, should only be used internally. I created this constant for internal ease of use.
+> Note: `REQUIRED_GROUPS` that you will see in the source, should only be used internally. I created this constant for internal ease of use.
+
+### DISALLOWED_LIST
+
+The disallowed list is an array that accepts strings as it's value. It only checks for the values and not the keys, so putting something in there won't change anything.
+
+#### Example
+
+```php
+<?php
+    include_once "Sanity.php";
+
+    Sanity::configure(array(
+        Sanity::DISALLOWED_LIST => array("123", "abc", "password"),
+    ),"password");
+
+    $test = "mypassword123";
+
+    if (Sanity::check($test, "password"))
+        echo "This won't happen with the test input";
+    else
+        echo "Input contains invalid sequence of characters";
+
+```
+
+In the above example the string, `mypassword123` would fail because it contains two sets from the disallowed list; `123 & password`. It checks the set lists in order, so it would actually fail on the first check of, `123`.
+
+As you can see, it doesn't matter how you format your string, if it contains any of the sequence of characters set in the `DISALLOWED_LIST` it will reject the input. This check, as stated in the constant table, is not case sensitive. So if you have `password` in the list and your input contains `PASsword` it will still fail.
 
 ## Sanity Functions
 
