@@ -128,7 +128,7 @@ Example
 
 ```php
     <?php
-    // Youscript.php
+    // Yourscript.php
     include_once "Sanity.php" // Includes your configured Sanity rules
 
     if (Sanity::check($userInput, "password"))
