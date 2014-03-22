@@ -93,8 +93,8 @@ All functions in Sanity are static, so you must call them like such: Sanity::fun
 
 Function Name | Parameters | Return Value | Description
 ------------- | ---------- | ------------ | ------------
-configure() | ($conf = array(), $ruleName = null) | N/A | Takes an array the rule variables and a string to name your configuration. $ruleName is optional
-check() | ($input = string , $ruleName = null) | bool | Returns true if $input meets the criteria of $ruleName, or default rules if $ruleName is undefined.
+configure() | (`array()`, `$ruleName`) | N/A | Takes an array the rule variables and a string to name your configuration. $ruleName is optional
+check() | (`$input = string , $ruleName = null) | bool | Returns true if $input meets the criteria of $ruleName, or default rules if $ruleName is undefined.
 check_and_hash() | ($input = string, $ruleName = null) | string or false | Returns a hash of the input if it meets the ruleName criteria. The hash returned is defined in [PasswordHash](PasswordHash.php)
 print_default_rules() | N/A | N/A | This echo's a formatted string that displays what Sanity's default rules currently are.
 print_saved_rules() | N/A | N/A | Same as print_default_rules(), except it prints the contents of the saved_rules array.
@@ -141,10 +141,11 @@ Example
 
 ##  TODO
 
-- [ ] **COMPLEXITY_REQUIRED** doesn't check how many of the *__COUNT variables are set to 0. So if they are all < 0, your input will always fail when **COMPLEXITY_REQUIRED** is > 0
-- [ ] **COMPLEXITY_REQUIRED** also will make input fail if **ALLOW_*** variables are all false, and **COMPLEXITY_REQUIRED** is > 2
+- [ ] `COMPLEXITY_REQUIRED` doesn't check how many of the `__COUNT` variables are set to 0. So if they are all < 0, your input will always fail when **COMPLEXITY_REQUIRED** is > 0
+- [ ] `COMPLEXITY_REQUIRED` also will make input fail if `ALLOW_` variables are all false, and `COMPLEXITY_REQUIRED` is > 2
 - [ ] Implement more robust debug information that can be obtain and presented to the end user.
 - [ ] Increased optimization. I'm sure there is more that can be done to increase the speed of Sanity
+- [ ] Add wildcard characters and/or the ability to use regex in the `DISALLOWED_LIST` -- maybe just simplified regex :P
 
 ## License
 
