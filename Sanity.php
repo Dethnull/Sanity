@@ -95,14 +95,14 @@
          *      Sanity::ALLOW_NUMBERS Boolean value to reject numbers or not
          *      Sanity::IGNORE_CASE Boolean value to ignore the case of the input or not. If true then forces input to
          *                          lowercase for checking
-         *      Sanity::UPPER Required # of uppercase letters to pass check. Ignored if <= 0
-         *      Sanity::LOWER Required # of lowercase letters to pass check. Ignored if <= 0
-         *      Sanity::NUMBER Required amount of #'s to pass check. Ignored if <= 0
-         *      Sanity::SYMBOL Required amount of symbols to pass check. Ignored if <= 0
-         *      Sanity::WHITESPACES Required amount of whitespaces to pass check. Ignored if <= 0
+         *      Sanity::UPPER_COUNT Required # of uppercase letters to pass check. Ignored if <= 0
+         *      Sanity::LOWER_COUNT Required # of lowercase letters to pass check. Ignored if <= 0
+         *      Sanity::NUMBER_COUNT Required amount of #'s to pass check. Ignored if <= 0
+         *      Sanity::SYMBOL_COUNT Required amount of symbols to pass check. Ignored if <= 0
+         *      Sanity::WHITESPACES_COUNT Required amount of whitespaces to pass check. Ignored if <= 0
          *      Sanity::REQUIRED_GROUPS array of the groups required to pass check.
          *                              COMPLEXITY_REQUIRED checks against the size of this array.
-         *                              Currently these groups are: UPPER, LOWER, NUMBER, SYMBOL, WHITESPACES
+         *                              Currently these groups are: UPPER_COUNT, LOWER_COUNT, NUMBER_COUNT, SYMBOL_COUNT, WHITESPACES_COUNT
          *      Sanity::DISALLOWED_LIST array of case-insensitive consecutive values that are not allowed in input.
          *      Sanity::DEBUG boolean if true allows use of print_debug_info()
          *
@@ -183,7 +183,7 @@
 
         /**
          * This is the primary function of Sanity. It checks your input against the given ruleName, or if one is not
-         * provided it uses whatever is in the DEFAULT_RULES array. This returns
+         * provided it uses whatever is in the DEFAULT_RULES array.
          *
          * @since 1.0
          *
