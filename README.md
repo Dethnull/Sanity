@@ -147,6 +147,7 @@ Example
 - [ ] Increased optimization. I'm sure there is more that can be done to increase the speed of Sanity
 - [ ] Add wildcard characters and/or the ability to use regex in the `DISALLOWED_LIST` -- maybe just simplified regex :P
 - [ ] Add the ability to specify which saved rule to print out with `print_saved_rules()`
+- [ ] Add the ability to specify whether you want to update or overwrite the `DISALLOWED_LIST`
 
 ## License
 
