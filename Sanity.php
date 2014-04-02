@@ -161,7 +161,7 @@
                 self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::WHITESPACES_COUNT] = $conf[self::WHITESPACES_COUNT];
             }
             if (isset($conf[self::DISALLOWED_LIST])) {
-                array_merge(self::$DEFAULT_RULES[self::DISALLOWED_LIST], $conf[self::DISALLOWED_LIST]);
+                self::$DEFAULT_RULES[self::DISALLOWED_LIST] = array_merge(self::$DEFAULT_RULES[self::DISALLOWED_LIST], $conf[self::DISALLOWED_LIST]);
             }
             if (isset($conf[self::DEBUG])) {
                 self::$DEFAULT_RULES[self::DEBUG] = $conf[self::DEBUG];
