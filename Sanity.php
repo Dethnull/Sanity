@@ -1,7 +1,7 @@
 <?php
 
-    include_once "./portable-utf8.php"; // See file for licensing & author information
-    include_once "./PasswordHash.php"; // see file for licensing & author information
+    include_once "portable-utf8.php"; // See file for licensing & author information
+    include_once "PasswordHash.php"; // see file for licensing & author information
 
     /**
      * Class Sanity
