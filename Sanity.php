@@ -322,8 +322,14 @@
             // = whitespaces and forced to all lowercase ==
             // --------------------------------------------
             foreach ($disallowedList as $set) {
-
-                $set      = utf8_strtolower(trim($set));
+                $set = trim($set); // for now we are trimming the whitespaces here so that blank strings don't accidentialy
+                // cause the input to fail.
+                if ($set === null || $set === "") {
+                    // We add this info to the debug messages, but skip this $set
+                    self::d("Null or empty character found in disallowed_list");
+                    continue;
+                }
+                $set      = utf8_strtolower($set);
                 $setChars = utf8_split($set);
 
                 $setLen   = count($setChars);
