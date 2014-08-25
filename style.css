@@ -101,7 +101,7 @@ body {
 }
 #Rules {
     position: absolute;
-    left: 5px; top: 5px;
+    right: 5px; top: 5px;
     font-size: .8em;
     color: white;
     padding: 5px;

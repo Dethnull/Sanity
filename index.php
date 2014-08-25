@@ -1,73 +1,26 @@
 <?php
+    require_once 'init.php';
 
-    include_once 'Sanity.php';
-
-    $input = (isset($_GET['input']) ? $_GET['input'] : null);
-
-    $minLen = (isset($_GET['min_length']) ? $_GET['min_length'] : 8);
-    $maxLen = (isset($_GET['max_length']) ? $_GET['max_length'] : -1);
-    $complexReq = (isset($_GET['complex_req']) ? $_GET['complex_req'] : 3);
-    if (isset($_GET['allow_whitespaces'])) {
-        $allowWhiteSpace = 1;
-    } else {
-        $allowWhiteSpace = 0;
-    }
-
-    if (isset($_GET['allow_symbols'])) {
-        $allowSymbols = 1;
-    } else {
-        $allowSymbols = 0;
-    }
-
-    if (isset($_GET['allow_numbers'])) {
-        $allowNumbers = 1;
-    } else {
-        $allowNumbers = 0;
-    }
-
-    if (isset($_GET['ignore_case'])) {
-        $ignoreCase = 1;
-    } else {
-        $ignoreCase = 0;
-    }
-
-    $upper = (isset($_GET['upper']) ? $_GET['upper'] : 1);
-    $lower = (isset($_GET['lower']) ? $_GET['lower'] : 1);
-    $number = (isset($_GET['number']) ? $_GET['number'] : 1);
-    $symbol = (isset($_GET['symbol']) ? $_GET['symbol'] : 1);
-    $whiteSpace = (isset($_GET['white_space']) ? $_GET['white_space'] : 1);
-    if (isset($_GET['disallowed_list']) && !empty($_GET['disallowed_list'])) {
-        $disallowedList = explode(',', $_GET['disallowed_list']);
-    } else {
-        $disallowedList = null;
-    }
-
-    $debug = (isset($_GET['debug']) ? $_GET['debug'] : 0);
-    $ruleName = (isset($_GET['rule_name']) ? $_GET['rule_name'] : null);
-    if ($input) {
+    if (Input::get('input')) {
         //TODO: allow for saved configuration to be serialized with json and loaded back into Sanity
         Sanity::configure(array(
-            Sanity::MIN_LENGTH          => $minLen,
-            Sanity::MAX_LENGTH          => $maxLen,
-            Sanity::COMPLEXITY_REQUIRED => $complexReq,
-            Sanity::ALLOW_WHITESPACES   => $allowWhiteSpace,
-            Sanity::ALLOW_SYMBOLS       => $allowSymbols,
-            Sanity::ALLOW_NUMBERS       => $allowNumbers,
-            Sanity::IGNORE_CASE         => $ignoreCase,
-            Sanity::UPPER_COUNT               => $upper,
-            Sanity::LOWER_COUNT               => $lower,
-            Sanity::NUMBER_COUNT              => $number,
-            Sanity::WHITESPACES_COUNT         => $whiteSpace,
-            Sanity::DISALLOWED_LIST     => $disallowedList,
-            Sanity::DEBUG               => $debug,
-        ), $ruleName);
+            Sanity::MIN_LENGTH          => Input::get('min_length', 8),
+            Sanity::MAX_LENGTH          => Input::get('max_length', -1),
+            Sanity::COMPLEXITY_REQUIRED => Input::get('complex_req', 3),
+            Sanity::ALLOW_WHITESPACES   => (Input::get('allow_whitespaces') ? 1 : 0),
+            Sanity::ALLOW_SYMBOLS       => (Input::get('allow_symbols') ? 1 : 0),
+            Sanity::ALLOW_NUMBERS       => (Input::get('allow_numbers') ? 1 : 0),
+            Sanity::IGNORE_CASE         => (Input::get('ignore_case') ? 1 : 0),
+            Sanity::UPPER_COUNT         => Input::get('upper', 1),
+            Sanity::LOWER_COUNT         => Input::get('lower', 1),
+            Sanity::NUMBER_COUNT        => Input::get('number', 1),
+            Sanity::SYMBOL_COUNT        => Input::get('symbol', 1),
+            Sanity::WHITESPACES_COUNT   => Input::get('whitespace', 1),
+            Sanity::DISALLOWED_LIST     => explode(',', Input::get('disallowed_list')),
+            Sanity::DEBUG               => Input::get('debug', 0),
+        ), Input::get('rule_name', null));
     }
-
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,34 +32,34 @@
 </div>
 
 <div id='Main'>
-    <form name='WhatSanity' action='index.php' method='get'>
+    <form name='WhatSanity' action='' method='get'>
         <div id='Allows' class='box'>
             <input id="allow_numbers" name="allow_numbers" type="checkbox"
-                <?php if (isset($_GET['allow_numbers'])) {
+                <?php if (Input::get('allow_numbers')) {
                     echo "checked='checked'";
                 } ?>/>
             <label for='allow_numbers'>Allow Numbers</label><br/>
 
             <input id='allow_symbols' name='allow_symbols' type='checkbox'
-                <?php if (isset($_GET['allow_symbols'])) {
+                <?php if (Input::get('allow_symbols')) {
                     echo "checked='checked'";
                 } ?>/>
             <label for='allow_symbols'>Allow Symbols</label><br/>
 
             <input id='allow_whitespaces' name='allow_whitespaces' type='checkbox'
-                <?php if (isset($_GET['allow_whitespaces'])) {
+                <?php if (Input::get('allow_whitespaces')) {
                     echo "checked='checked'";
                 } ?>/>
             <label for='allow_whitespaces'>Allow Whitespaces</label><br/>
 
             <input id='ignore_case' name='ignore_case' type='checkbox'
-                <?php if (isset($_GET['ignore_case'])) {
+                <?php if (Input::get('ignore_case')) {
                     echo "checked='checked'";
                 } ?>/>
             <label for='ignore_case'>Ignore Case</label><br/>
 
             <input id='debug' name='debug' type='checkbox'
-                <?php if (isset($_GET['debug'])) {
+                <?php if (Input::get('debug')) {
                     echo "checked='checked'";
                 } ?>/>
             <label for='debug'>Show Debug</label><br/>
@@ -116,7 +69,7 @@
             <select id='complex_req' name='complex_req'>
                 <?php
                     for ($i = 0; $i < 6; $i++) {
-                        if ($complexReq == $i) {
+                        if (Input::get('complex_req') == $i) {
                             echo "<option value={$i} selected='selected'>$i</option>\n";
                         } else {
                             echo "<option value={$i}>$i</option>\n";
@@ -128,54 +81,51 @@
             <br/>
 
             <input id='upper' name='upper' type='number' size='2'
-                   value='<?php (isset($_GET['upper']) ? print $_GET['upper'] : print 1) ?>'/>
+                   value='<?php echo Input::get('upper'); ?>'/>
             <label for='upper'>Uppercase</label>
             <br/>
 
             <input id='lower' name='lower' type='number' size='2'
-                   value='<?php (isset($_GET['lower']) ? print $_GET['lower'] : print 1) ?>'/>
+                   value='<?php echo Input::get('lower'); ?>'/>
             <label for='lower'>Lowercase</label>
             <br/>
 
             <input id='number' name='number' type='number' size='2'
-                   value='<?php (isset($_GET['number']) ? print $_GET['number'] : print 1) ?>'/>
+                   value='<?php echo Input::get('number'); ?>'/>
             <label for='number'>Numbers</label>
             <br/>
 
             <input id='symbol' name='symbol' type='number' size='2'
-                   value='<?php (isset($_GET['symbol']) ? print $_GET['symbol'] : print 1) ?>'/>
+                   value='<?php echo Input::get('symbol'); ?>'/>
             <label for='symbol'>Symbols</label>
             <br/>
 
             <input id='whitespace' name='whitespace' type='number' size='2'
-                   value='<?php (isset($_GET['white_space']) ? print $_GET['white_space'] : print 1) ?>'/>
+                   value='<?php echo Input::get('whitespace'); ?>'/>
             <label for='whitespace'>Whitespaces</label>
+            <br/>
+
+            <input type="text" name="rule_name" id="rule_name" value="<?php echo Input::get('rule_name'); ?>"/>
+            <label for="rule_name">Rule Name</label><br/>
         </div>
+
 
         <div id='CharLengths' class='right'>
             <input id='min_length' name='min_length' type='number' size='2'
-                   value='<?php (isset($_GET['min_length']) ? print $_GET['min_length'] : print 8) ?>'/>
+                   value='<?php echo Input::get('min_length', 8) ?>'/>
             <label for='min_length'>Minimum Length</label> <br/>
             <input id='max_length' name='max_length' type='number' size='2'
-                   value='<?php (isset($_GET['max_length']) ? print $_GET['max_length'] : print -1) ?>'
+                   value='<?php echo Input::get('max_length', -1) ?>'
                    title='If <= 0, max length is ignored'/>
             <label for='max_length'>Maximum Length</label> <br/>
         </div>
-
-        <div id='RuleName'>
-            <label for="rule_name">Rule Name</label><br/>
-            <input type="text" name="rule_name" id="rule_name" value="
-            <?php if (isset($_GET['rule_name'])) { echo $_GET['rule_name']; } ?>
-            "/>
-        </div>
-
 
         <br/><br/>
 
         <div id='Disallowed' class='box'>
             <label for='disallowed_list'>Disallowed Sequence list</label><br/>
             <textarea id='disallowed_list' name='disallowed_list'
-                      cols='45'><?php (isset($_GET['disallowed_list']) ? print $_GET['disallowed_list'] : print null) ?></textarea><br/>
+                      cols='45'><?php echo Input::get('disallowed_list'); ?></textarea><br/>
                     <span>Note: This is a comma separate list. The check against this list is only evaluated after
                         checking all other options. This list, however, is not sanity checked itself.
                     </span>
@@ -185,19 +135,19 @@
         <div id='InputBox' class="box">
             <label for='input'>Test Input</label>
             <textarea id='input' name='input'
-                      cols='45'><?php (isset($_GET['input']) ? print $_GET['input'] : print null) ?></textarea><br/>
+                      cols='45'><?php echo Input::get('input') ?></textarea><br/>
             <input type='submit' name='submit' value='Test'/>&nbsp;&nbsp;&nbsp;
-            <a href="/sanity/index.php?allow_numbers=on&allow_symbols=on&allow_whitespaces=on&debug=on&complex_req=3&upper=1&lower=1&number=1&symbol=1&whitespace=1&min_length=8&max_length=-1">Load
-                default</a>
+            <a href="index.php?allow_numbers=on&allow_symbols=on&allow_whitespaces=on&debug=on&complex_req=3&upper=1&lower=1&number=1&symbol=1&whitespace=1&min_length=8&max_length=-1">Load
+                                                                                                                                                                                        default</a>
         </div>
     </form>
 
     <div id='Info'>
         <p id='info_text'>
             <?php
-                if (isset($input) && !empty($input)) {
+                if (Input::get('input')) {
                     $start = microtime(true);
-                    if (Sanity::check($input, $ruleName)) {
+                    if (Sanity::check(Input::get('input'), Input::get('rule_name'))) {
                         echo "Input passed check!<br/><br/>";
                         $end = (microtime(true) - $start);
 
@@ -205,7 +155,7 @@
                         echo "Input is invalid<br/><br/>";
                         Sanity::print_debug_info();
                     }
-                    $end = (microtime(true) - $start)*1000;
+                    $end = (microtime(true) - $start) * 1000;
                     echo "Check completed in {$end} m/s<br/>";
                 }
             ?>
@@ -213,7 +163,11 @@
     </div>
 
     <div id="Rules">
-        <?php if (isset($ruleName)) {Sanity::print_saved_rules();} else {Sanity::print_default_rules();} ?>
+        <?php if (Input::get('rule_name')) {
+            Sanity::print_saved_rules();
+        } else {
+            Sanity::print_default_rules();
+        } ?>
     </div>
 </div>
 

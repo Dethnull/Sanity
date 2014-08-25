@@ -48,20 +48,20 @@
 
         // Default rules used if any rules are omitted during configuration
         private static $DEFAULT_RULES = array(
-            self::MIN_LENGTH          => 8, // Ignored if < 1
+            self::MIN_LENGTH          => 8,  // Ignored if < 1
             self::MAX_LENGTH          => -1, // Ignored if < 1 or < MIN_LENGTH
             self::ALLOW_WHITESPACES   => 1,
             self::ALLOW_SYMBOLS       => 1,
             self::ALLOW_NUMBERS       => 1,
-            self::IGNORE_CASE         => 0, // If true forces input to all lowercase for checking
+            self::IGNORE_CASE         => 0,  // If true forces input to all lowercase for checking
             // COMPLEXITY_REQUIRED is the amount of fields in REQUIRED_GROUPS that must be met
             // for the sanity check to be valid. Error will be thrown if this number is higher
             // than the active values in REQUIRED_GROUPS
             self::COMPLEXITY_REQUIRED => 3,
             self::REQUIRED_GROUPS     => array(
                 self::UPPER_COUNT       => 2, // If any of these values are < 0, they will be ignored
-                self::LOWER_COUNT       => 2, //
-                self::NUMBER_COUNT      => 2,
+                self::LOWER_COUNT       => 2, // Note: if COMPLEXITY_REQUIRED is greater than the number of
+                self::NUMBER_COUNT      => 2, // positive values, input will always fail.
                 self::SYMBOL_COUNT      => 2,
                 self::WHITESPACES_COUNT => 2,
             ),
@@ -114,7 +114,7 @@
          */
         public static function configure($conf = array(), $ruleName = null) {
             $backup_rules = null;
-            if (isset($ruleName)) {
+            if ($ruleName) {
                 $backup_rules = self::$DEFAULT_RULES; // Name is set, backup the default values
 
                 // Name exists, so this is an update
@@ -161,14 +161,18 @@
                 self::$DEFAULT_RULES[self::REQUIRED_GROUPS][self::WHITESPACES_COUNT] = $conf[self::WHITESPACES_COUNT];
             }
             if (isset($conf[self::DISALLOWED_LIST])) {
+                if (!is_array($conf[self::DISALLOWED_LIST])) {
+                    // If list is only a single value and not an array, create an array
+                    $conf[self::DISALLOWED_LIST] = array($conf[self::DISALLOWED_LIST]);
+                }
                 self::$DEFAULT_RULES[self::DISALLOWED_LIST] = array_merge(self::$DEFAULT_RULES[self::DISALLOWED_LIST], $conf[self::DISALLOWED_LIST]);
             }
             if (isset($conf[self::DEBUG])) {
                 self::$DEFAULT_RULES[self::DEBUG] = $conf[self::DEBUG];
             }
 
-            if (isset($conf)) {
-                if (isset($ruleName)) {
+            if ($conf) {
+                if ($ruleName) {
                     // Reassign the named rule to the updated values
                     if (array_key_exists($ruleName, self::$SAVED_RULES)) {
                         self::$SAVED_RULES[$ruleName] = self::$DEFAULT_RULES;
@@ -182,8 +186,8 @@
         }
 
         /**
-         * This is the primary function of Sanity. It checks your input against the given ruleName, or if one is not
-         * provided it uses whatever is in the DEFAULT_RULES array.
+         * This is the primary function of Sanity. It checks your input against the given ruleName, or, if one is not
+         * provided, it uses whatever is in the DEFAULT_RULES array.
          *
          * @since 1.0
          *
@@ -194,8 +198,8 @@
          */
         public static function check($input, $ruleName = null) {
             // Set the current RULE_IN_USE
-            $input = trim($input);
-            if (isset($ruleName)) {
+            $input = trim($input); // Trim any leading/trailing whitespaces, they are allowed in the middle.
+            if ($ruleName) {
                 if (array_key_exists($ruleName, self::$SAVED_RULES)) {
                     self::$RULE_IN_USE = self::$SAVED_RULES[$ruleName];
                 } else {
@@ -322,7 +326,7 @@
             // = whitespaces and forced to all lowercase ==
             // --------------------------------------------
             foreach ($disallowedList as $set) {
-                $set = trim($set); // for now we are trimming the whitespaces here so that blank strings don't accidentialy
+                $set = trim($set); // for now we are trimming the whitespaces here so that blank strings don't accidentally
                 // cause the input to fail.
                 if ($set === null || $set === "") {
                     // We add this info to the debug messages, but skip this $set
@@ -433,6 +437,8 @@
          * This is more of a helper function when dealing primarily with passwords, but can be used for any value
          * needing hashing.
          *
+         * Note: This function does use a salt to hash the $input.
+         *
          * @since 1.0
          *
          * @param string $input String of input to be Sanity checked and hashed
@@ -450,6 +456,21 @@
         }
 
         /**
+         * This is a simple wrapper function for the PasswordHash library. It checks the password value against
+         * the hashed version and returns true/false.
+         *
+         * See @link PasswordHash.php for more info on password salts and hashes
+         *
+         * @param $password string input password to check
+         * @param $hashed_pw string password to check against
+         *
+         * @return bool
+         */
+        public static function validate($password, $hashed_pw) {
+            return validate_password($password, $hashed_pw);
+        }
+
+        /**
          * This function prints a formatted list of the default rules. The default rules may be changed if configure
          * is set without passing a ruleName to it.
          *
@@ -460,7 +481,7 @@
                 if (is_array($value)) {
                     echo "{\t}Rule: {$rule}\n\r<br/>";
                     foreach ($value as $key => $val) {
-                        echo "&nbsp;&nbsp;&nbsp;{$key} &nbsp;&nbsp;=> {$val}\n\r<br/>";
+                        echo "\t\t\t{$key} &nbsp;&nbsp;=> {$val}\n\r<br/>";
                     }
                 } else {
                     echo "{\t}Rule: {$rule}\t {$value}<br/>";
@@ -479,12 +500,12 @@
                     echo "Rule Name: {$name}<br/>";
                     foreach ($rules as $rule => $value) {
                         if (is_array($value)) {
-                            echo "{\t}Rule: {$rule}\n\r<br/>";
+                            echo "(){$rule}\n\r<br/>";
                             foreach ($value as $key => $val) {
-                                echo "&nbsp;&nbsp;&nbsp;{$key} &nbsp;&nbsp;=> {$val}\n\r<br/>";
+                                echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$val}\t:{$key} \n\r<br/>";
                             }
                         } else {
-                            echo "{\t}Rule: {$rule}\t {$value}<br/>";
+                            echo "{$value}\t: {$rule}<br/>";
                         }
                     }
                     echo "<br/>";

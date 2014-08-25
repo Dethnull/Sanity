@@ -8,6 +8,15 @@
 - Passwords, Usernames, Emails; the choice is up to you!
 
 
+## Table of Contents
+- [Example](#example)
+- [Configuration Explained](#configuration-explained)
+- [Disallowed List](#disallowed_list)
+- [Functions](#sanity-functions)
+- [Tip](#tip)
+- [To-do List](#todo-list)
+- [License](#license)
+
 ## Example
 
 ```php
@@ -139,15 +148,15 @@ Example
 ```
 
 
-##  TODO List
+## TODO List
 
 - [ ] `COMPLEXITY_REQUIRED` doesn't check how many of the `__COUNT` variables are set to 0. So if they are all < 0, your input will always fail when **COMPLEXITY_REQUIRED** is > 0
 - [ ] `COMPLEXITY_REQUIRED` also will make input fail if `ALLOW_` variables are all false, and `COMPLEXITY_REQUIRED` is > 2
-- [ ] Implement more robust debug information that can be obtain and presented to the end user.
+- [ ] Implement more robust debug information that can be obtained and presented to the end user.
 - [ ] Increased optimization. I'm sure there is more that can be done to increase the speed of Sanity
 - [ ] Add wildcard characters and/or the ability to use regex in the `DISALLOWED_LIST` -- maybe just simplified regex :P
 - [ ] Add the ability to specify which saved rule to print out with `print_saved_rules()`
-- [ ] Add the ability to specify whether you want to update or overwrite the `DISALLOWED_LIST`
+- [ ] Add the ability to specify whether you want to update or overwrite the `DISALLOWED_LIST` - as of now it appends to list
 
 ## License
 
