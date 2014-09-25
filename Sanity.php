@@ -239,7 +239,7 @@
                 return false;
             }
             // == Its ok for maxLength to be the same as minLength, as long as it's not less
-            if (($maxLength >= 1) && ($maxLength >= $minLength) && ($inputLen >= $maxLength)) {
+            if (($maxLength >= 1) && ($maxLength >= $minLength) && ($inputLen > $maxLength)) {
                 self::d("Input length is {$inputLen}, which greater than maxlength {$maxLength}");
 
                 return false;
